@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { GlobalContext } from "../../context";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 export default function Details() {
   const { id } = useParams();
-  const [recipeDetailsData, setRecipeDetailsData] = useState(GlobalContext);
+  const {recipeDetailsData, setRecipeDetailsData, handleAddToFavorite} =useContext(GlobalContext);
 
   useEffect(() => {
     async function getRecipeDetails() {
@@ -18,7 +18,7 @@ export default function Details() {
       }
     }
     getRecipeDetails();
-  }, []);
+  }, [id]);
   return (
     <div className="container mx-auto py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
       <div className="row-start-2 lg:row-start-auto">
@@ -37,20 +37,25 @@ export default function Details() {
           {recipeDetailsData?.recipe?.title}
         </h3>
         <div>
-          <button className="p-3 px-8 rounded-lg uppercase font-medium tracking-wider inline-block shadow-md bg-black text-white mt-3">
+          <button
+            onClick={() => handleAddToFavorite(recipeDetailsData?.recipe)}
+            className="p-3 px-8 rounded-lg uppercase font-medium tracking-wider inline-block shadow-md bg-black text-white mt-3"
+          >
             Save as favourites
           </button>
         </div>
         <div>
-          <span className="text-2xl font-semibold text-black">Ingredients:</span>
+          <span className="text-2xl font-semibold text-black">
+            Ingredients:
+          </span>
           <ul className="flex flex-col gap-3">
             {recipeDetailsData?.recipe?.ingredients.map((ingredient) => (
               <li key={ingredient.id}>
                 <span className="text-2xl font-semibold text-black">
-                  {ingredient.quantity } {ingredient.unit }
+                  {ingredient.quantity} {ingredient.unit}
                 </span>
                 <span className="text-2xl font-semibold text-black">
-                  {ingredient.description } 
+                  {ingredient.description}
                 </span>
               </li>
             ))}
